@@ -25,34 +25,37 @@
 
 // include files
 #include <iostream>		// note that .h is omitted
+#include <iomanip>
 #include <cmath>
-#include <fstream>
 using namespace std;	// we need this when .h is omitted
 
 //*********************************************************************//
 
-main () {
-float a, b, c;                // coefficients of quadratic equation
+int
+main ()
+{
+  float a, b, c;                // coefficients of quadratic equation
 
-cout << endl
+
+  cout << endl
   << "Calculation of quadratic equation roots in single precision"
   << endl << endl;
 
-cout << "Enter a, b, c: [with spaces between, followed by <return>] ";
+  cout << "Enter a, b, c: [with spaces between, followed by <return>] ";
   cin >> a >> b >> c;
 
-cout << "a = " << a << ", b = " << b << ", c = " << c;
+  cout << "a = " << a << ", b = " << b << ", c = " << c << endl;
 
-disc = pow (b * b - 4. * a * c, 0.5); // definition of discriminant
+  float disc = pow (b * b - 4. * a * c, 0.5); // definition of discriminant
 
-float x1 = (-b + disc) / (2. * a);      // first root, standard formula
-float x1p = -2. * c / (b + disc);    // first root, new formula
-float x2 = (-b - disc) / (2. * a);        // second root, standard formula
-float x2p = (-2. * c) / (b - disc);   // second root, new formula
+  float x1 = (-b + disc) / (2. * a);      // first root, standard formula
+  float x1p = -2. * c / (b + disc);    // first root, new formula
+  float x2 = (-b - disc) / (2. * a);        // second root, standard formula
+  float x2p = (-2. * c) / (b - disc);   // second root, new formula
 
-cout << "     first root             second root  " << endl;
-cout << fixed << setprecision (16) << x1 << "   " << x2;
-cout << fixed << setprecision (16) << x1 << "   " << x2 << endl;
+  cout << "     first root             second root  " << endl;
+  cout << fixed << setprecision (20) << x1 << "   " << x2 << endl;
+  cout << fixed << setprecision (20) << x1p << "   " << x2p << endl;
 
-return (0);
+  return (0);
 }

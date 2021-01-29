@@ -1,5 +1,5 @@
 # gnuplot plot file: quad_eq.plt
-set terminal   # terminal type (try: help set terminal)
+set terminal x11   # terminal type (try: help set terminal)
 set title ’Landau/Paez 3.4-1 Quadratic Equation’
 set xlabel ’c=10^{-n} for n=1..7 [a=1,b=2]’
 set ylabel ’relative error’
