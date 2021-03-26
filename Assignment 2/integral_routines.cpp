@@ -51,7 +51,7 @@ double milne_rule ( int num_pts, double x_min, double x_max,
      sum += (64.)*integrand(x1) + (24.)*integrand(x2) +
             (64.)*integrand(x3) + (28.)*integrand(x4);
    }
-  sum += 14. * (x_min - x_max); // set endpoints
+  sum += 14. * (integrand(x_min) - integrand(x_max)); // set endpoints
   sum *= (interval / 45.);
 
    return (sum);
@@ -85,25 +85,30 @@ double simpsons_rule ( int num_pts, double x_min, double x_max,
 //************************************************************************
 
 // Integration using GSL
+double my_gsl_intergration_qags (double x_min, double x_max,
+  double (*integrand) (double x, void*))
+{
   gsl_integration_workspace *work_ptr
     = gsl_integration_workspace_alloc (1000);
 
-  double lower_limit = 0;	/* lower limit a */
-  double upper_limit = 1;	/* upper limit b */
+  double lower_limit = x_min;	/* lower limit a */
+  double upper_limit = x_max;	/* upper limit b */
   double abs_error = 1.0e-8;	/* to avoid round-off problems */
   double rel_error = 1.0e-8;	/* the result will usually be much better */
   double result;		/* the result from the integration */
   double error;			/* the estimated error from the integration */
 
   double alpha = 1.0;		// parameter in integrand
-  double expected = -4.0;	// exact answer
+  // double expected = -4.0;	// exact answer
 
-  gsl_function My_function;
+  gsl_function My_function_gsl;
   void *params_ptr = &alpha;
 
-  My_function.function = &my_integrand_gsl;
-  My_function.params = params_ptr;
+  My_function_gsl.function = integrand;
+  My_function_gsl.params = params_ptr;
 
-  gsl_integration_qags (&My_function, lower_limit, upper_limit,
+  gsl_integration_qags (&My_function_gsl, lower_limit, upper_limit,
 			abs_error, rel_error, 1000, work_ptr, &result,
 			&error);
+      return result;
+  }

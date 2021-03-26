@@ -17,12 +17,11 @@
 //  begin: function prototypes
 
 extern double milne_rule ( int num_pts, double x_min, double x_max,
-                         double (*integrand) (double x) );    // trapezoid rule
+                         double (*integrand) (double x) );    // Milne rule
 extern double simpsons_rule ( int num_pts, double x_min, double x_max,
                        double (*integrand) (double x) );    // Simpson's rule
-extern double gsl_integrand( int num_pts, double x_min, double x_max,
-                        double (*integrand) (double x) );    // Gauss' rule
-
+extern double my_gsl_integration_qags (double x_min, double x_max,
+  double (*integrand) (double x, void*)); // GSL
 //extern void gauss(int npts, int job, double a, double b,
 //                double x[], double w[]);              // from gauss.cpp
 
