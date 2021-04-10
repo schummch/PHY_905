@@ -56,56 +56,54 @@ int
 main (void)
 {
   // set up the integration specifiction
-  const int max_intervals = 501;	// maximum number of intervals
+  const int max_intervals = 1501;	// maximum number of intervals
   const double lower = 0.0;	// lower limit of integration
   const double upper = 1.0;	// upper limit of integration
 
-  const double answer = 4.0;	// the "exact" answer of the integral
+  const double answer = 3.141592;	// the "exact" answer of the integral
   double result = 0.;  // approximate answer double
 
-  // open the output file stream
+
+  // Simpson's rule requires an odd number of intervals
   ofstream simpson_out ("simpson_int.dat");	// save Simpsons data in simpson_int.dat
-  ofstream milne_out ("milne_int.dat");		// save milne data in milne_int.dat
-  ofstream gsl_out ("gsl_int.dat");	// save gsl data in gsl_int.dat
 
   simpson_out  << "#  N                                      Simpsons " << endl;
   simpson_out  << "#--------------------------------------------------" << endl;
 
-  milne_out  << "#  N                                      Milne " << endl;
-  milne_out  << "#--------------------------------------------------" << endl;
 
-
-  // Milne and Simpson's rules both require an odd number of intervals
   for (int i = 3; i <= max_intervals; i += 2)
   {
     simpson_out  << setw(16) << log10(i) << "  ";
 
-    result = simpsons_rule (i, lower, upper, &my_integrand);  //printing the simpsons error with error value computed simultaneosly
-    simpson_out << setprecision(16) << setw(16) << "  " << scientific << log10(fabs(result-answer) + 10e-16);  // addition of 10e-16 to avoid values less than machine precision
+    result = simpsons_rule (i, lower, upper, &my_integrand);
+    simpson_out << "  " << scientific << log10 (fabs ((result - answer) / answer));
 
     simpson_out  << endl;
   }
 
 	simpson_out .close ();
 
-for (int i = 5; i <= max_intervals; i += 4)
-  {
-    milne_out  << setw(16) << log10(i) << "  ";
+  // Milnes's rules requires an odd number of intervals
+  ofstream milne_out ("milne_int.dat");		// save milne data in milne_int.dat
 
-    result = milne_rule (i, lower, upper, &my_integrand); //printing the Milne error with error value computed simultaneosly
-    milne_out  << setprecision(16) << setw(16) << "  "
-               << scientific << answer << "   "
-               << scientific << result << endl;
+  milne_out  << "#  N                                      Milne " << endl;
+  milne_out  << "#--------------------------------------------------" << endl;
 
-               //<< log10(fabs(result-answer)/answer + 10e-16);  // addition of 10e-16 to avoid values less than machine precision
+  for (int i = 5; i <= max_intervals; i += 4)
+    {
+      milne_out  << setw(16) << log10(i) << "  ";
 
-   milne_out  << endl;
-  }
+      result = milne_rule (i, lower, upper, &my_integrand); //printing the Milne error with error value computed simultaneosly
+      milne_out << "  " << scientific << log10 (fabs ((result - answer) / answer));
 
+      milne_out  << endl;
+    }
 
-   milne_out .close ();
+  milne_out .close ();
 
 //*********************************************************************************************
+
+  ofstream gsl_out ("gsl_int.dat");	// save gsl data in gsl_int.dat
 
   gsl_integration_workspace *work_ptr
     = gsl_integration_workspace_alloc (10000);
@@ -118,7 +116,7 @@ for (int i = 5; i <= max_intervals; i += 4)
   double error;			/* the estimated error from the integration */
 
   double alpha = 1.0;		// parameter in integrand
-  double expected = -4.0;	// exact answer
+  double expected = 3.141592;	// exact answer
 
   gsl_function My_function;
   void *params_ptr = &alpha;
@@ -130,14 +128,12 @@ for (int i = 5; i <= max_intervals; i += 4)
 			abs_error, rel_error, 10000, work_ptr, &resultgsl,
 			&error);
 
+  gsl_out << "actual error = " << log10(fabs(resultgsl - expected)) << endl;
+  gsl_out << "intervals = " << work_ptr->size << endl;
 
-  int width = 20;  // setw width for output
-  gsl_out << "actual error    = " << setw(width) << log10(fabs(result - expected)) << endl;
-  gsl_out << "intervals =  " << work_ptr->size << endl;
+gsl_out .close();
 
   cout << "data stored in 3 .dat files";  //printing out that data storage was successful
-
-
 
   return (0);
 }
@@ -148,13 +144,13 @@ for (int i = 5; i <= max_intervals; i += 4)
 double
 my_integrand (double x)
 {
-return ((log(1. * x))/ (sqrt (x)));
+  return (sin(x) * sin(x));
 }
 
-// Same function, but for GSL
+  // Same function, but for GSL
 
  double my_gsl_integrand (double x, void *params)
  {
    double alpha = *(double *) params;
-   return (log(alpha * x) / (sqrt (x)));
+   return (sin(x) * sin(x*alpha));
  }

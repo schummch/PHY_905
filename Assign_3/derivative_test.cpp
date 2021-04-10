@@ -70,13 +70,7 @@ main (void)
   My_F.params = params_ptr;
   gsl_diff_central (&My_F, x, &diff_gsl_cd, &abserr);	// gsl calculation
 
-  cout << "gsl_diff_central(" << x << ") = " << scientific
-    << setprecision (16) << diff_gsl_cd << " +/- "
-    << setprecision (6) << abserr << endl;
-  cout << " actual relative error: " << setprecision (8)
-    << fabs ((diff_gsl_cd - answer) / answer) << endl;
-
-  double h = 0.1;		// initialize mesh spacing
+  double h = 0.5;		// initialize mesh spacing
   while (h >= hmin)
     {
       diff_fd = forward_diff (x, h, &funct, params_ptr);

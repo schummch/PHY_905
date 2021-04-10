@@ -39,12 +39,21 @@
 //   * Improve efficiency (reduce run time)
 //   * Split into more files (?) or convert to classes
 //
+// All of my plots for the different dimensions converge to zero at around
+// r= 1.5. I tried b_ho = .3 and it was too small, my .plt didn't seem right,
+// then I tried b_ho = 1. and the graphs seemed to line up much better. Lastly,
+// I tried very large b_ho (>10) and lost the convergence aspect of my graphs.
+
+
 ///******************************************************************
 
 // include files
 #include <iostream>		// note that .h is omitted
 #include <iomanip>		// note that .h is omitted
 #include <cmath>
+#include <fstream>
+#include <string>
+#include <sstream>
 using namespace std;
 
 #include <gsl/gsl_eigen.h>	        // gsl eigensystem routines
@@ -89,30 +98,26 @@ inline double sqr (double x)  {return x*x;}
 int
 main ()
 {
+
+double dimensions [4] = {1., 5., 10., 20.};
+
+  for (int d = 0; d <= 4; d++)
+  {
+
+  int dimension = dimensions[d];
   hij_parameters ho_parameters;  // parameters for the Hamiltonian
 
-  // pick the potential based on the integer "answer"
-  int answer = 0;
-  while (answer != 1 && answer != 2)	// don't quit until 1 or 2!
-    {
-      cout << "Enter 1 for Coulomb or 2 for square well potential: ";
-      cin >> answer;
-    }
+  // pick the potential to be Square Well
+  int answer = 2;
+
   ho_parameters.potential_index = answer;
 
   // Set up the harmonic oscillator basis
-  double b_ho;			// ho length parameter
-  cout << "Enter the oscillator parameter b: ";
-  cin >> b_ho;
+  double b_ho = 1.0;			// ho length parameter
 
   double mass = 1;		 // measure mass in convenient units
   ho_parameters.mass = mass;
   ho_parameters.b_ho = b_ho;
-
-  // pick the dimension of the basis (matrix)
-  int dimension;		// dimension of the matrices and vectors
-  cout << "Enter the dimension of the basis: ";
-  cin >> dimension;
 
   // See the GSL documentation for matrix, vector structures
   //  Define and allocate space for the vectors, matrices, and workspace
@@ -129,14 +134,11 @@ main ()
   for (int i = 0; i < dimension; i++)
     {
       for (int j = 0; j < dimension; j++)
-	{
-	  ho_parameters.i = i;
-	  ho_parameters.j = j;
-	  gsl_matrix_set (Hmat_ptr, i, j, Hij (ho_parameters));
-	  // print statement for debugging
-	  cout << "i = " << i << ", j = " << j
-	    << ", Hij = " << Hij (ho_parameters) << endl;
-	}
+	     {
+	        ho_parameters.i = i;
+	         ho_parameters.j = j;
+	          gsl_matrix_set (Hmat_ptr, i, j, Hij (ho_parameters));
+       }
     }
 
   // Find the eigenvalues and eigenvectors of the real, symmetric
@@ -151,22 +153,33 @@ main ()
   // Print out the results
   // Allocate a pointer to one of the eigenvectors of the matrix
   gsl_vector *eigenvector_ptr = gsl_vector_alloc (dimension);
-  for (int i = 0; i < dimension; i++)
+
+
+  gsl_matrix_get_col (eigenvector_ptr, Eigvec_ptr, 0.);
+
+  // open the output file
+  ostringstream my_filename;
+  my_filename.str ("");
+  my_filename <<"eigen_basis_dim=" << dimension << ".dat";
+  string my_filename2 = my_filename.str();
+
+  ofstream out;    // declare the output file
+  out.open (my_filename2.c_str());
+
+  out << "r      Eigenvalue" << endl;
+  //Loop r
+  for (double r= 0; r < 10.; r += 0.05)
+  {
+    double eigenvector =0.;
+
+    for (int j = 1.; j < dimension; j++)
     {
-      double eigenvalue = gsl_vector_get (Eigval_ptr, i);
-      gsl_matrix_get_col (eigenvector_ptr, Eigvec_ptr, i);
-
-      cout << "eigenvalue " << i+1 << " = "
-           << scientific << eigenvalue << endl;
-
-      // Don't print the eigenvectors yet . . .
-      // cout << "eigenvector = " << endl;
-      // for (j = 0; j < dimension; j++)
-      // {
-      //   cout << scientific << gsl_vector_get (eigenvector_ptr, j) << endl;
-      // }
-
+      eigenvector += gsl_vector_get (eigenvector_ptr, j) * ho_radial (j+1, 0, b_ho, r);
     }
+
+  out << r << "     "<< eigenvector << endl;
+
+  }
 
   // free the space used by the vector and matrices  and workspace
   gsl_matrix_free (Eigvec_ptr);
@@ -175,6 +188,8 @@ main ()
   gsl_vector_free (eigenvector_ptr);
   gsl_eigen_symmv_free (worksp);
 
+  out.close ();    // close the output file
+  }
   return (0);			// successful completion
 }
 
