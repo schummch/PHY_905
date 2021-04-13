@@ -7,7 +7,7 @@
 //  Revision history:
 //      02/19/05  original version, based on Monte_Carlo_test.cpp
 //
-//  Notes:  
+//  Notes:
 //   * For more details, see the GNU Scientific Library Reference Manual
 //   * Compile and link with:
 //  g++ -Wall -o gsl_monte_carlo_test gsl_monte_carlo_test.cpp -lgsl -lgslcblas
@@ -41,17 +41,17 @@ main ()
 {
   // details of the integrand
   const int dimension = 10;   // dimension of integral
-  
+
   // set upper and lower limits
   double xl[dimension] = { 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};     // (all 0's)
   double xu[dimension] = { 1.,1.,1.,1.,1.,1.,1.,1.,1.,1.};     // (all 1's)
 
   // set up the random number generator
-  gsl_rng *rng_ptr;		// declare pointer to random number 
-                                //   generator (rng) 
-  rng_ptr = gsl_rng_alloc (gsl_rng_taus);	// allocate the rng 
+  gsl_rng *rng_ptr;		// declare pointer to random number
+                                //   generator (rng)
+  rng_ptr = gsl_rng_alloc (gsl_rng_taus);	// allocate the rng
   unsigned long int seed = random_seed ();  // generate a random seed
-  gsl_rng_set (rng_ptr, seed);	// seed the rng 
+  gsl_rng_set (rng_ptr, seed);	// seed the rng
 
   // set up the function for Monte Carlo routines
   gsl_monte_function my_gsl_function = { &my_integrand, dimension, NULL };
@@ -62,7 +62,7 @@ main ()
 
   // first use plain, uniform sampling
   gsl_monte_plain_state *my_plain_state = gsl_monte_plain_alloc (dimension);
-  gsl_monte_plain_integrate (&my_gsl_function, xl, xu, dimension, calls, 
+  gsl_monte_plain_integrate (&my_gsl_function, xl, xu, dimension, calls,
      rng_ptr, my_plain_state, &result, &error);
   gsl_monte_plain_free (my_plain_state);
 
@@ -71,7 +71,7 @@ main ()
 
   // now use the "miser" routine
   gsl_monte_miser_state *my_miser_state = gsl_monte_miser_alloc (dimension);
-  gsl_monte_miser_integrate (&my_gsl_function, xl, xu, dimension, calls, 
+  gsl_monte_miser_integrate (&my_gsl_function, xl, xu, dimension, calls,
     rng_ptr, my_miser_state, &result, &error);
   gsl_monte_miser_free (my_miser_state);
 
@@ -82,7 +82,7 @@ main ()
   gsl_monte_vegas_state *my_vegas_state = gsl_monte_vegas_alloc (dimension);
 
     // first do 10000 points as a warm-up
-  gsl_monte_vegas_integrate (&my_gsl_function, xl, xu, dimension, 10000, 
+  gsl_monte_vegas_integrate (&my_gsl_function, xl, xu, dimension, 10000,
     rng_ptr, my_vegas_state, &result, &error);
   display_results ("vegas warm-up", result, error);
 
@@ -90,12 +90,12 @@ main ()
   cout << "converging... " << endl;
   for (int i=0; i < 2; i++)
     {
-      gsl_monte_vegas_integrate (&my_gsl_function, xl, xu, dimension, 
+      gsl_monte_vegas_integrate (&my_gsl_function, xl, xu, dimension,
          calls / 2, rng_ptr, my_vegas_state, &result, &error);
       cout
 	<< "result = " << setprecision (6) << result
 	<< " sigma = " << setprecision (6) << error
-	<< " chisq/dof = " << setprecision (1) << my_vegas_state->chisq 
+	<< " chisq/dof = " << setprecision (1) << my_vegas_state->chisq
         << endl;
     }
   gsl_monte_vegas_free (my_vegas_state);
@@ -111,12 +111,12 @@ double
 my_integrand (double *x, size_t dim, void *)
 {
   double sum = 0.;
-  
+
   for (int i = 0; i < int(dim); i++)
     {
-      sum += x[i]; 
+      sum += 4 * x[i]; 
     }
-  
+
   return sum*sum;
 }
 
