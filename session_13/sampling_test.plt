@@ -1,9 +1,9 @@
 # file: sampling_test.plt
 #
 # gnuplot plotfile for Monte Carlo sampling test
-#  
+#
 #  Programmer:  Dick Furnstahl  furnstahl.1@osu.edu
-# 
+#
 #  Revision history
 #   2004-05-09  original version for 780.20 session 22
 #   2005-02-22  minor revisions for 780.20 session 12
@@ -18,7 +18,7 @@ set xlabel "energy E"
 set ylabel "P(E)"
 
 # set the terminal type to be the screen (which is x11 here)
-set term x11 
+# set term x11 
 
 # plot
 set style data linespoints
@@ -31,9 +31,9 @@ plot \
      "sampling_test_kT1.dat" using 1:4 title 'Metropolis T=1.0'
 
 
-# output the plot to the file sampling_test_plt.ps   
+# output the plot to the file sampling_test_plt.ps
 set out "sampling_test_plt.ps"
-set term postscript color 
+set term postscript color
 replot
 
 reset
