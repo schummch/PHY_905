@@ -58,10 +58,10 @@ const int num_mcs = 1000;       // # of Monte Carlo steps (mcs)
 int
 main (void)
 {
-  double kT = 2.;          // temperature (in energy units)
-  cout << "What temperature? (kT) ";
-  cin >> kT;
-
+  // double kT = 2.;          // temperature (in energy units)
+  // cout << "What temperature? (kT) ";
+  // cin >> kT;
+  for kT = 2;
   double dist_metropolis[num_energies]; // energy distribution at kT from
                                         //  importance sampling (Metropolis)
   // initialize energy distribution histogram to zero
@@ -87,21 +87,6 @@ main (void)
   int config_metropolis[num_sites];   // current configuration
 
   // generate a random configuration to start and find its energy
-  // for (int i = 0; i < num_sites; i++)
-  // {
-  //   double random = gsl_ran_flat (rng_ptr, 0., 1.);
-  //   if (random > 0.5)
-  //   {
-  //     config_metropolis[i] = -1;  // spin down
-  //   }
-  //   else
-  //   {
-  //     config_metropolis[i] = +1;  // spin up
-  //   }
-  //   energy0 = calculate_energy ( config_metropolis );
-  // }
-
-  // generate a random configuration and cool
   for (int i = 0; i < num_sites; i++)
   {
     double random = gsl_ran_flat (rng_ptr, 0., 1.);

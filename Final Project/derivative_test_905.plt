@@ -20,7 +20,7 @@ set ylabel 'Error'
 set key left
 
 # set the x and y axis scales (already logs)
-set xrange [-10:2]
+set xrange [-10:0]
 # set yrange [-12:-2]
 
 # set the terminal type to be the screen (which is x11 here)
