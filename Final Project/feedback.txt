@@ -1,0 +1,5 @@
+grade: check
+* It would've been good to do a bit more exploration (e.g., timing) of the differences between python and c++,
+and/or an extension of the methods covered in class (e.g., computing higher-order richardson extrapolations,
+adaptively refining the step-size h, etc.). But I understand time is finite and you probably have more on your 
+plate with the usual slew of 1st-year grad courses. 
